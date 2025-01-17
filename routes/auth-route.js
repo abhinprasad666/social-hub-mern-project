@@ -1,5 +1,5 @@
 const express=require('express')
-const { singup }= require('../controllers/auth-controllers')
+const { singup,login,logout }= require('../controllers/auth-controllers')
 
 const router=express.Router()
 
@@ -8,8 +8,11 @@ const router=express.Router()
 
 
 // 
-router.get('/singup',singup)
-
+router.post('/singup',singup)
+// 
+router.post('/login',login)
+// 
+router.post('/logout',logout)
 
 
 
