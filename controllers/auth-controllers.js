@@ -1,5 +1,6 @@
 const { userModel } = require("../models/user.model")
 const bcrypt=require('bcryptjs')
+const { generateToken } = require("../utils/generateToken")
 
 // singup 
 const singup=async(req,res)=>{
@@ -42,13 +43,12 @@ const singup=async(req,res)=>{
             password:hashedPassword
         })
         if(newUser){
-            generateToken(userModel._id,res)
+        generateToken(userModel._id,res)
             await newUser.save()
             res.status(200).json(newUser)
         }else(
             res.status(400).json({error:"Invalid User Data"})
         )
-
 
     } catch (error) {
         res.status(404).json({message:error.message})
