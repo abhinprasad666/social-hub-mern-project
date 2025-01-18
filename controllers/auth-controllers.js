@@ -1,6 +1,7 @@
 const { userModel } = require("../models/user.model")
 const bcrypt=require('bcryptjs')
 const { generateToken } = require("../utils/generateToken")
+const { json } = require("express")
 
 // singup 
 const singup=async(req,res)=>{
@@ -55,24 +56,41 @@ const singup=async(req,res)=>{
 
     }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // login
 const login=async(req,res)=>{
 
     try {
-        res.status(200).json('login')
+        const {username,password}=req.body
+        // finding user...
+        oldUser=await userModel.findOne({username})
+        // checking password
+        isCorrectPassword=await bcrypt.compare(password,oldUser.password||"")
+
+        if(!oldUser || !isCorrectPassword){
+            return res.status(400).json({error:"Invalid Username or Password"})
+        }
+
+        // creating cookie
+        generateToken(oldUser._id,res)
+    
+        res.status(200).json(oldUser)
         
     } catch (error) {
         res.status(400).json({message:error.message})
     }
-
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // logout
 const logout=async (req,res)=>{
 
     try {
-        res.status(200).json('logout')
+        res.cookie("jwt","",{maxAge:0})
+        res.status(200).json('Logout Successfully')
     } catch (error) {
-        res.status(200).json({message:error.message})
+        res.status(500).json({message:error.message})
     }
 
 }

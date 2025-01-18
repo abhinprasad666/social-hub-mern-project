@@ -1,22 +1,18 @@
-const jws=require('jsonwebtoken')
-// const dotenv=require('dotenv')
+const jwt=require('jsonwebtoken')
 
-
-
-// dotenv.config()
 
 
 const generateToken=async(userId,res)=>{
-       
-    const token=jws.sign(
+    //    creating token
+    const token=jwt.sign(       
         {userId},
         process.env.JWS_CODE,
         {expiresIn:"15d"})
 
-        res.cookie("jws",token,{
+        res.cookie("jwt",token,{
             maxAge:15*24*60*1000,
-            httpOnly:true, //xss acttacks 
-            sameSite:"strict",
+            httpOnly:true, //XSS acttacks 
+            sameSite:"strict", //CSRF attacks
             secure:process.env.NODE_ENV!=="develepment"
         })
 }
